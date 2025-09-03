@@ -1,0 +1,23 @@
+{
+    "manifest_version": 2,
+    "name":"Job logger",
+    "version": "1.0",
+    "description": "Scrapes the page and downloads the json for it",
+    "icons": {
+        "512": "icon.png"
+    },
+
+    "browser_action": {},
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "borderify@example.com"
+        }
+    },
+
+    "permissions": ["tabs", "activeTab", "http://localhost:8080/*"],
+
+    "background": {
+        "scripts": ["background.js"]
+    }
+}

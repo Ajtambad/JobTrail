@@ -1,0 +1,6 @@
+{
+    "token":"random_key_token_please_change_me",
+    "host":"localhost",
+    "port":"8080",
+    "ssl_mode":"development"
+}
