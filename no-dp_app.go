@@ -1,8 +1,8 @@
 package main
 
 import (
-	"database/sql"
-	"encoding/csv"
+	//"database/sql"
+	//"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -22,14 +22,14 @@ type EventData struct {
 	URL    string `json:"url"`
 }
 
-/* Fill these details*/
-// const (
-// 	host     = "localhost"
-// 	port     = 5432
-// 	user     = "postgres"
-// 	password = "123"
-// 	dbname   = "postgres"
-// )
+/* Fill these details */
+/*const (
+	host     = "host"
+	port     = 0000
+	user     = "user"
+	password = "password"
+	dbname   = "postgres"
+)*/
 
 func enableCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +51,7 @@ func get_request(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Web Server Running!")
 }
 
-func post_request(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func post_request(w http.ResponseWriter, r *http.Request) {
 
 	//Extracting data sent to /ingest
 	var data EventData
@@ -65,19 +65,19 @@ func post_request(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	date := time.Now().Format("2006-01-02")
 
 	//Inserting data into table.
-	insert_query := `
+	/*insert_query := `
 	INSERT INTO jobs (title, url, timestamp) VALUES ($1, $2, $3)
 	`
 	_, err = db.Exec(insert_query, title, url, date)
 
 	if err != nil {
 		panic(err)
-	}
+	}*/
 	fmt.Printf(title, url, date)
 	w.WriteHeader(http.StatusOK)
 }
 
-func exporter(db *sql.DB) {
+/*func exporter(db *sql.DB) {
 	fname := "D:/job_list.csv"
 	var err error
 	isNewFile := false
@@ -130,16 +130,16 @@ func exporter(db *sql.DB) {
 
 	fmt.Println("Data Appended to CSV successfully")
 
-}
+}*/
 
-func truncate(db *sql.DB) {
+/*func truncate(db *sql.DB) {
 	db.Query("TRUNCATE TABLE jobs")
-}
+}*/
 
 func main() {
 
 	//Setting up connection with PostgreSQL
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	/*psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
@@ -149,7 +149,7 @@ func main() {
 	err = db.Ping()
 	if err != nil {
 		panic(err)
-	}
+	}*/
 	fmt.Println("Successfully connected!")
 
 	//Trying to capture SIGINT
@@ -162,8 +162,8 @@ func main() {
 		sig := <-sigs
 		fmt.Println()
 		fmt.Println(sig)
-		exporter(db)
-		truncate(db)
+		//exporter(db)
+		//truncate(db)
 		os.Exit(0)
 	}()
 
@@ -171,7 +171,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", get_request).Methods("GET")
 	r.HandleFunc("/ingest", func(w http.ResponseWriter, r *http.Request) {
-		post_request(w, r, db)
+		post_request(w, r)
 	}).Methods("POST", "OPTIONS")
 
 	fmt.Println("awaiting Signal")
